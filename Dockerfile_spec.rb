@@ -11,7 +11,7 @@ describe "Dockerfile" do
                 $stdout.puts log["stream"]
             end
         end
-        image.tag('repo' => 'libepp-nicbr', 'tag' => '1.15-centos7', 'force' => true)
+        image.tag('repo' => 'luiscoms/libepp-nicbr', 'tag' => '1.15-centos7', 'force' => true)
         set :backend, :docker
         set :docker_image, image.id
     }
