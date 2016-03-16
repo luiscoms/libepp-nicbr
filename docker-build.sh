@@ -10,4 +10,9 @@ docker rm ${DOCKER_NAME}
 # docker rmi $(docker images --filter "dangling=true" -q | sort -u)
 
 echo "Building docker image:"
-docker build --force-rm -t ${DOCKER_TAG} .
+docker build --force-rm \
+	-t ${DOCKER_REPO}/${DOCKER_NAME}:${DOCKER_TAG} \
+	-t ${DOCKER_REPO}/${DOCKER_NAME}:latest \
+	-t ${DOCKER_NAME}:${DOCKER_TAG} \
+	-t ${DOCKER_NAME}:latest \
+	.
