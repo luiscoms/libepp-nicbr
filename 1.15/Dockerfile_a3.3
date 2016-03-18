@@ -1,0 +1,28 @@
+FROM alpine:3.3
+
+MAINTAINER Luis Fernando Gomes <dev@luiscoms.com.br>
+
+RUN apk add --update gcc g++ make openssl-dev readline-dev\
+	wget\
+	&& cd /tmp/ \
+	&& wget http://ftp.unicamp.br/pub/apache/xerces/c/3/sources/xerces-c-3.1.3.zip\
+	&& wget http://www.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.3.zip.sha1\
+	&& sha1sum -c xerces-c-3.1.3.zip.sha1\
+	&& unzip xerces-c-3.1.3 && cd xerces-c-3.1.3\
+	&& ./configure && make && make install\
+	&& wget ftp://ftp.registro.br/pub/libepp-nicbr/libepp-nicbr-1.15.tar.gz\
+	&& wget ftp://ftp.registro.br/pub/libepp-nicbr/libepp-nicbr-1.15.tar.gz.sha1\
+	&& sed -i.bak 's/.*(\(.*\)) = \(.*\)/\2  \1/' libepp-nicbr-1.15.tar.gz.sha1\
+	&& sha1sum -c libepp-nicbr-1.15.tar.gz.sha1\
+	&& tar xzvf libepp-nicbr-1.15.tar.gz && cd libepp-nicbr-1.15\
+	&& ./configure && make\
+	&& cd src/shepp && make && make install && cd -\
+	&& make install\
+	&& apk del wget\
+	&& cd /tmp/\
+	&& rm -rf /tmp/*
+	# && apk cache clean\
+
+WORKDIR /libepp-nicbr
+
+# CMD ['shepp']
