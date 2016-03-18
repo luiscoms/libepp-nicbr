@@ -4,7 +4,7 @@ source docker-config.sh
 
 # Delete all containers
 # docker rm $(docker ps -aq)
-docker rm ${DOCKER_NAME}
+docker rm ${DOCKER_NAME} 2>/dev/null
 
 # Delete all untaged images
 # docker rmi $(docker images --filter "dangling=true" -q | sort -u)
@@ -12,7 +12,8 @@ docker rm ${DOCKER_NAME}
 echo "Building docker image:"
 docker build --force-rm \
 	-t ${DOCKER_REPO}/${DOCKER_NAME}:${DOCKER_TAG} \
-	-t ${DOCKER_REPO}/${DOCKER_NAME}:latest \
-	-t ${DOCKER_NAME}:${DOCKER_TAG} \
-	-t ${DOCKER_NAME}:latest \
-	.
+	-f 1.15/Dockerfile_c7 \
+	1.15/
+	# -t ${DOCKER_NAME}:latest \
+	# -t ${DOCKER_REPO}/${DOCKER_NAME}:latest \
+	# -t ${DOCKER_NAME}:${DOCKER_TAG} \

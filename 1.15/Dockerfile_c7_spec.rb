@@ -1,17 +1,19 @@
 require 'serverspec'
 require 'docker'
 
+curdir = File.dirname(__FILE__)
+
 # Set read timeout to 5 minutes
 Docker.options[:read_timeout] = 300
 
 describe "Dockerfile" do
     before(:all) {
-        image = Docker::Image.build_from_dir('.', :forcerm => true) do |v|
+        image = Docker::Image.build_from_dir(curdir, { 'dockerfile' => 'Dockerfile_c7', 'forcerm' => true }) do |v|
             if (log = JSON.parse(v)) && log.has_key?("stream")
                 $stdout.puts log["stream"]
             end
         end
-        image.tag('repo' => 'luiscoms/libepp-nicbr', 'tag' => '1.15-centos7', 'force' => true)
+        image.tag('repo' => 'luiscoms/libepp-nicbr', 'tag' => '1.15-c7', 'force' => true)
         set :backend, :docker
         set :docker_image, image.id
     }
@@ -20,9 +22,9 @@ describe "Dockerfile" do
       it { should be_installed }
     end
 
-    describe package('wget') do
-      it { should be_installed }
-    end
+    # describe package('wget') do
+    #   it { should be_installed }
+    # end
 
     describe package('gcc') do
       it { should be_installed }

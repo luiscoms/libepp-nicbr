@@ -1,0 +1,22 @@
+FROM centos:7
+
+MAINTAINER Luis Fernando Gomes <dev@luiscoms.com.br>
+
+RUN yum update -y\
+	&& yum install -y gcc gcc-c++ make xerces-c-devel openssl-devel readline-devel\
+	wget\
+	&& cd /tmp/ \
+	&& wget ftp://ftp.registro.br/pub/libepp-nicbr/libepp-nicbr-1.15.tar.gz\
+	&& wget ftp://ftp.registro.br/pub/libepp-nicbr/libepp-nicbr-1.15.tar.gz.sha1\
+	&& sha1sum -c libepp-nicbr-1.15.tar.gz.sha1\
+	&& tar xzvf libepp-nicbr-1.15.tar.gz && cd libepp-nicbr-1.15\
+	&& ./configure && make && make install\
+	&& yum remove -y wget\
+	&& yum autoremove -y\
+	&& yum clean all\
+	&& cd - \
+	&& rm -rf /tmp/*
+
+WORKDIR /libepp-nicbr
+
+# CMD ['/usr/local/bin/shepp']
