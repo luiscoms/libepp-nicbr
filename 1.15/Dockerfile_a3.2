@@ -7,7 +7,7 @@ ENV LIBPEP libepp-nicbr-1.15
 RUN apk add --update gcc g++ make openssl-dev readline-dev\
 	wget\
 	&& cd /tmp/ \
-	&& wget http://mirror.nbtelecom.com.br/apache/xerces/c/3/sources/xerces-c-3.1.2.zip\
+	&& wget http://ftp.unicamp.br/pub/apache/xerces/c/3/sources/xerces-c-3.1.3.zip\
 	&& wget http://www.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.3.zip.sha1\
 	&& sha1sum -c xerces-c-3.1.3.zip.sha1\
 	&& unzip xerces-c-3.1.3 && cd xerces-c-3.1.3\
