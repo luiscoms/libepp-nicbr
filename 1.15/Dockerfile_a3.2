@@ -2,7 +2,7 @@ FROM alpine:3.2
 
 MAINTAINER Luis Fernando Gomes <dev@luiscoms.com.br>
 
-ENV LIBPEP libepp-nicbr-1.15
+ENV LIBEPP libepp-nicbr-1.15
 
 RUN apk add --update gcc g++ make openssl-dev readline-dev\
 	wget\
@@ -20,7 +20,7 @@ RUN apk add --update gcc g++ make openssl-dev readline-dev\
 	&& ./configure && make\
 	&& cd src/shepp && make && make install && cd -\
 	&& make install\
-	&& apk del wget\
+	&& apk del wget make g++\
 	&& cd /tmp/\
 	&& rm -rf /tmp/*
 
