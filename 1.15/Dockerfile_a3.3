@@ -3,14 +3,16 @@ FROM alpine:3.3
 MAINTAINER Luis Fernando Gomes <dev@luiscoms.com.br>
 
 ENV LIBEPP libepp-nicbr-1.15
+ENV XERCES xerces-c-3.2.1
 
-RUN apk add --update gcc g++ make openssl-dev readline-dev\
-	wget\
-	&& cd /tmp/ \
-	&& wget http://ftp.unicamp.br/pub/apache/xerces/c/3/sources/xerces-c-3.1.3.zip\
-	&& wget http://www.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.3.zip.sha1\
-	&& sha1sum -c xerces-c-3.1.3.zip.sha1\
-	&& unzip xerces-c-3.1.3 && cd xerces-c-3.1.3\
+RUN apk add --no-cache gcc readline\
+	&& apk add --no-cache --virtual build-deps wget g++ make openssl-dev readline-dev
+
+RUN cd /tmp/ \
+	&& wget --no-check-certificate https://archive.apache.org/dist/xerces/c/3/sources/$XERCES.zip\
+	&& wget --no-check-certificate https://archive.apache.org/dist/xerces/c/3/sources/$XERCES.zip.sha1\
+	&& sha1sum -c $XERCES.zip.sha1\
+	&& unzip $XERCES && cd $XERCES\
 	&& ./configure && make && make install\
 	&& wget ftp://ftp.registro.br/pub/libepp-nicbr/${LIBEPP}.tar.gz\
 	&& wget ftp://ftp.registro.br/pub/libepp-nicbr/${LIBEPP}.tar.gz.sha1\
@@ -19,11 +21,19 @@ RUN apk add --update gcc g++ make openssl-dev readline-dev\
 	&& tar xzvf ${LIBEPP}.tar.gz && cd ${LIBEPP}\
 	&& ./configure && make\
 	&& cd src/shepp && make && make install && cd -\
-	&& make install\
-	&& apk del wget make g++\
-	&& cd /tmp/\
+	&& make install
+
+RUN wget ftp://ftp.registro.br/pub/libepp-nicbr/test-certificates/client.pem\
+	&& wget ftp://ftp.registro.br/pub/libepp-nicbr/test-certificates/root.pem\
+	&& mv -f *.pem /usr/local/share/libepp_nicbr/ssl/
+
+RUN apk del build-deps \
 	&& rm -rf /tmp/*
 
 WORKDIR /libepp-nicbr
+
+# test shepp installation
+RUN echo -e "server beta.registro.br \nconnect\nexit" > commands && shepp -f commands
+RUN [ $(shepp -f commands | grep greeting | wc -l) -gt 0 ] || exit 1  # fail connection
 
 # CMD ['shepp']
